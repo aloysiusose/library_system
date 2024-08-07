@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookLoanService {
@@ -37,7 +38,7 @@ public class BookLoanService {
     bookLoans.setBooks(books);
     bookLoans.setUsers(users);
     bookLoans.setLoanDate(LocalDate.now());
-        books.setCopiesAvailable(books.getCopiesAvailable()-1);
+    books.setCopiesAvailable(books.getCopiesAvailable()-1);
     bookLoanRepository.save(bookLoans);
     booksRepository.save(books);
     }
@@ -49,6 +50,9 @@ public class BookLoanService {
     public void returnLoanedBook(int loanId) throws CustomException {
         BookLoans bookLoans = bookLoanRepository.findById(loanId).orElseThrow(() -> new CustomException("There is no record or entry for loan corresponding to id: %s".formatted(loanId)));
         bookLoans.setReturnDate(LocalDate.now());
+        Books books = booksRepository.findById(bookLoans.getBooks().getId()).orElseThrow();
+        books.setCopiesAvailable(books.getCopiesAvailable()+1);
         bookLoanRepository.save(bookLoans);
+        booksRepository.save(books);
     }
 }

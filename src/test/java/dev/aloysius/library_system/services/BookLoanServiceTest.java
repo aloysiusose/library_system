@@ -144,6 +144,7 @@ class BookLoanServiceTest {
     void testReturnLoanedBook() throws CustomException {
         when(bookLoanRepository.findById(1)).thenReturn(Optional.of(loan1));
         when(bookLoanRepository.save(any(BookLoans.class))).thenReturn(loan1);
+        when(booksRepository.findById(1)).thenReturn(Optional.of(book1));
 
         bookLoanService.returnLoanedBook(1);
 
